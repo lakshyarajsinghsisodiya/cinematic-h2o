@@ -40,13 +40,15 @@ function WaterSequence() {
     if (!context) return;
 
     const setCanvasSize = () => {
-      canvas.width = window.innerWidth * 2;
-      canvas.height = window.innerHeight * 2;
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
 
       canvas.style.width = `${window.innerWidth}px`;
       canvas.style.height = `${window.innerHeight}px`;
 
-      context.scale(2, 2);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     setCanvasSize();
@@ -76,15 +78,31 @@ function WaterSequence() {
         window.innerHeight
       );
 
-      const scale = Math.min(
-        window.innerWidth / img.width,
-        window.innerHeight / img.height
-      );
+      const isMobile = window.innerWidth < 768;
+
+      let scale;
+
+      // ---------------------------------------
+      // FULLSCREEN MOBILE CINEMATIC FIT
+      // ---------------------------------------
+
+      if (isMobile) {
+        scale = Math.max(
+          (window.innerWidth * 1.15) / img.width,
+          (window.innerHeight * 1.05) / img.height
+        );
+      } else {
+        scale = Math.min(
+          (window.innerWidth * 0.65) / img.width,
+          (window.innerHeight * 0.82) / img.height
+        );
+      }
 
       const width = img.width * scale;
       const height = img.height * scale;
 
       const x = (window.innerWidth - width) / 2;
+
       const y = (window.innerHeight - height) / 2;
 
       context.drawImage(img, x, y, width, height);
@@ -131,11 +149,11 @@ function WaterSequence() {
       {/* atmosphere */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_50%)]" />
 
-      {/* glow */}
-      <div className="absolute w-[1000px] h-[1000px] rounded-full bg-white/[0.04] blur-[200px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+      {/* cinematic glow */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.04] blur-[200px] w-[400px] h-[400px] md:w-[1000px] md:h-[1000px]" />
 
       {/* reflection */}
-      <div className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[800px] h-[180px] rounded-full bg-white/[0.08] blur-[140px]" />
+      <div className="absolute bottom-[12%] md:bottom-[8%] left-1/2 -translate-x-1/2 rounded-full bg-white/[0.08] blur-[140px] w-[220px] h-[60px] md:w-[800px] md:h-[180px]" />
 
       {/* canvas */}
       <canvas
@@ -164,12 +182,12 @@ function SectionHeading({
       viewport={{ once: true }}
       className="max-w-4xl"
     >
-      <h2 className="text-5xl md:text-7xl leading-[0.95] tracking-[-0.05em] font-light">
+      <h2 className="text-4xl sm:text-5xl md:text-7xl leading-[0.95] tracking-[-0.05em] font-light">
         {title}
       </h2>
 
       {subtitle && (
-        <p className="mt-8 text-zinc-500 text-lg leading-relaxed max-w-xl">
+        <p className="mt-6 md:mt-8 text-zinc-500 text-base md:text-lg leading-relaxed max-w-xl">
           {subtitle}
         </p>
       )}
@@ -230,7 +248,7 @@ export default function Page() {
       {/* progress line */}
       <motion.div
         style={{ scaleY: scrollYProgress }}
-        className="fixed top-0 right-5 w-[1px] h-full bg-white/40 origin-top z-[300]"
+        className="fixed top-0 right-3 md:right-5 w-[1px] h-full bg-white/40 origin-top z-[300]"
       />
 
       {/* HERO */}
@@ -241,33 +259,33 @@ export default function Page() {
             className="absolute inset-0 z-30"
           >
             {/* giant H2O */}
-            <div className="absolute left-[-5vw] top-[2vh] leading-none select-none">
-              <div className="text-[34vw] md:text-[26vw] font-thin tracking-[-0.12em] text-white/[0.9]">
+            <div className="absolute left-[-8vw] md:left-[-5vw] top-[4vh] md:top-[2vh] leading-none select-none">
+              <div className="text-[42vw] md:text-[26vw] font-thin tracking-[-0.12em] text-white/[0.9]">
                 H
               </div>
 
-              <div className="absolute top-[18%] right-[-8%] text-[5vw] text-white/70 italic">
+              <div className="absolute top-[18%] right-[-8%] text-[8vw] md:text-[5vw] text-white/70 italic">
                 2
               </div>
 
-              <div className="text-[34vw] md:text-[26vw] font-thin tracking-[-0.12em] text-white/[0.1] -mt-[8vw] ml-[8vw]">
+              <div className="text-[42vw] md:text-[26vw] font-thin tracking-[-0.12em] text-white/[0.1] -mt-[8vw] ml-[8vw]">
                 O
               </div>
             </div>
 
             {/* hero copy */}
-            <div className="absolute left-[8%] bottom-[12%] max-w-xl">
-              <p className="text-xs tracking-[0.4em] uppercase text-zinc-500 mb-8">
+            <div className="absolute left-[8%] right-[8%] md:right-auto bottom-[10%] md:bottom-[12%] max-w-xl">
+              <p className="text-[10px] md:text-xs tracking-[0.35em] uppercase text-zinc-500 mb-6 md:mb-8">
                 Cinematic Water Experience
               </p>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-[-0.06em]">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light leading-[0.9] tracking-[-0.06em]">
                 More than
                 <br />
                 a molecule.
               </h1>
 
-              <p className="mt-8 text-zinc-500 text-lg leading-relaxed max-w-md">
+              <p className="mt-6 md:mt-8 text-zinc-500 text-base md:text-lg leading-relaxed max-w-md">
                 A premium immersive exploration of fluid motion,
                 molecular elegance, and cinematic atmosphere.
               </p>
@@ -275,7 +293,7 @@ export default function Page() {
           </motion.div>
 
           {/* scroll indicator */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-4 text-zinc-500 text-xs tracking-[0.4em] uppercase">
+          <div className="absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-3 md:gap-4 text-zinc-500 text-[10px] md:text-xs tracking-[0.4em] uppercase">
             <span>Scroll</span>
 
             <motion.div
@@ -284,14 +302,14 @@ export default function Page() {
                 repeat: Infinity,
                 duration: 2,
               }}
-              className="w-[1px] h-16 bg-white/20"
+              className="w-[1px] h-12 md:h-16 bg-white/20"
             />
           </div>
         </div>
       </section>
 
       {/* INTRO */}
-      <section className="relative min-h-screen flex items-center px-8 md:px-16 lg:px-28 py-40 z-20">
+      <section className="relative min-h-screen flex items-center px-6 md:px-16 lg:px-28 py-24 md:py-40 z-20">
         <SectionHeading
           title="The architecture of life."
           subtitle="Water exists as memory, reflection, atmosphere, silence, and motion."
@@ -299,8 +317,8 @@ export default function Page() {
       </section>
 
       {/* FACTS */}
-      <section className="relative px-8 md:px-16 lg:px-28 py-40 z-20">
-        <div className="max-w-7xl mx-auto space-y-32">
+      <section className="relative px-6 md:px-16 lg:px-28 py-24 md:py-40 z-20">
+        <div className="max-w-7xl mx-auto space-y-20 md:space-y-32">
           {facts.map((fact, index) => (
             <motion.div
               key={index}
@@ -308,14 +326,14 @@ export default function Page() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2 }}
               viewport={{ once: true }}
-              className="border-t border-white/10 pt-12"
+              className="border-t border-white/10 pt-8 md:pt-12"
             >
-              <div className="grid lg:grid-cols-2 gap-12">
-                <h3 className="text-3xl md:text-5xl font-light tracking-[-0.04em]">
+              <div className="grid lg:grid-cols-2 gap-8 md:gap-12">
+                <h3 className="text-2xl sm:text-3xl md:text-5xl font-light tracking-[-0.04em]">
                   {fact.title}
                 </h3>
 
-                <p className="text-zinc-500 text-lg leading-relaxed max-w-lg">
+                <p className="text-zinc-500 text-base md:text-lg leading-relaxed max-w-lg">
                   {fact.body}
                 </p>
               </div>
@@ -325,7 +343,7 @@ export default function Page() {
       </section>
 
       {/* END */}
-      <section className="relative min-h-screen flex items-center justify-center z-20">
+      <section className="relative min-h-screen flex items-center justify-center z-20 px-6">
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -333,11 +351,11 @@ export default function Page() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="text-[20vw] md:text-[14vw] font-thin tracking-[-0.12em] leading-none text-white/90">
+          <div className="text-[28vw] md:text-[14vw] font-thin tracking-[-0.12em] leading-none text-white/90">
             H₂O
           </div>
 
-          <p className="mt-8 text-zinc-500 tracking-[0.3em] uppercase text-sm">
+          <p className="mt-6 md:mt-8 text-zinc-500 tracking-[0.3em] uppercase text-[10px] md:text-sm">
             Pure by nature.
           </p>
         </motion.div>
