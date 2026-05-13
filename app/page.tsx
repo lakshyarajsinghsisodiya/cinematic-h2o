@@ -82,19 +82,17 @@ function WaterSequence() {
 
       let scale;
 
-      // ---------------------------------------
-      // FULLSCREEN MOBILE CINEMATIC FIT
-      // ---------------------------------------
-
+      // MOBILE = fullscreen cinematic fit
       if (isMobile) {
         scale = Math.max(
           (window.innerWidth * 1.15) / img.width,
           (window.innerHeight * 1.05) / img.height
         );
       } else {
-        scale = Math.min(
-          (window.innerWidth * 0.65) / img.width,
-          (window.innerHeight * 0.82) / img.height
+        // DESKTOP = immersive fullscreen feel
+        scale = Math.max(
+          (window.innerWidth * 0.92) / img.width,
+          (window.innerHeight * 0.92) / img.height
         );
       }
 
@@ -102,7 +100,6 @@ function WaterSequence() {
       const height = img.height * scale;
 
       const x = (window.innerWidth - width) / 2;
-
       const y = (window.innerHeight - height) / 2;
 
       context.drawImage(img, x, y, width, height);
